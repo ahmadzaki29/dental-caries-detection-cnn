@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+venv/
+.venv/
+
+# Env/Secrets
+.env
+*.env
+
+# OS/IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Build/Logs
+dist/
+build/
+*.log
+
+# App data (uploads, photos, archives, models)
+static/uploads/
+camera/photos/
+*.zip
+*.h5

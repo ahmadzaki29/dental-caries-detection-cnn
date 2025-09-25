@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block title %}Kamera{% endblock %}
+
+{% block content %}
+<!-- ===== KONTEN UTAMA ===== -->
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow-lg">
+            <!-- ===== HEADER KARTU ===== -->
+            <div class="card-header bg-primary text-white py-3">
+                <h3 class="card-title mb-0 text-center">
+                    <i class="fas fa-video me-2"></i>Deteksi Real-time
+                </h3>
+            </div>
+            <!-- ===== BODY KARTU ===== -->
+            <div class="card-body p-4">
+                <div class="row">
+                    <!-- ===== AREA KAMERA ===== -->
+                    <div class="col-lg-8">
+                        <div class="video-container position-relative mb-4">
+                            <img src="{{ url_for('video_feed') }}" alt="Video Feed" class="img-fluid rounded-3 shadow w-100">
+                            <div class="overlay-controls position-absolute bottom-0 start-0 w-100 p-3 bg-dark bg-opacity-75 text-white">
+                                <div class="d-flex justify-content-center gap-3">
+                                    <button id="captureBtn" class="btn btn-light">
+                                        <i class="fas fa-camera me-2"></i>Ambil & Analisis Foto
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button id="retryBtn" class="btn btn-outline-secondary" style="display: none;">
+                                <i class="fas fa-redo me-2"></i>Deteksi Ulang
+                            </button>
+                        </div>
+                    </div>
+                    <!-- ===== GALERI FOTO ===== -->
+                    <div class="col-lg-4">
+                        <div class="captured-photos">
+                            <h4 class="mb-3">Foto Tersimpan</h4>
+                            <div id="photoGallery" class="photo-gallery">
+                                <!-- Foto yang diambil akan ditampilkan di sini -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- ===== CSS KUSTOM ===== -->
+{% block extra_css %}
+<style>
+    .video-container {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .overlay-controls {
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+    
+    .photo-gallery {
+        max-height: 500px;
+        overflow-y: auto;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+    
+    .photo-gallery img {
+        width: 100%;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .photo-item {
+        background: #fff;
+        border: 1px solid #dee2e6 !important;
+        transition: all 0.3s ease;
+    }
+    
+    .photo-item:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    
+    #captureBtn:hover {
+        background-color: var(--secondary-color);
+        color: white;
+    }
+    
+    #captureBtn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    .prediction-result {
+        font-size: 1.2rem;
+        font-weight: bold;
+        padding: 10px 16px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        color: #fff;
+        text-align: center;
+        letter-spacing: 1px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .pred-bg-100 { background: #00c800; }
+    .pred-bg-90 { background: #00d7ff; color: #222; }
+    .pred-bg-80 { background: #008cff; }
+    .pred-bg-70 { background: #ff0033; }
+    .pred-bg-not-teeth { background: #ff8c00; color: #fff; }
+</style>
+{% endblock %}
+
+<!-- ===== JAVASCRIPT ===== -->
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const captureBtn = document.getElementById('captureBtn');
+        const photoGallery = document.getElementById('photoGallery');
+        let isProcessing = false;
+        
+        captureBtn.addEventListener('click', function() {
+            if (isProcessing) {
+                return; // Mencegah multiple click
+            }
+            
+            isProcessing = true;
+            captureBtn.disabled = true;
+            
+            // Ambil gambar dari video feed
+            const videoImg = document.querySelector('.video-container img');
+            const canvas = document.createElement('canvas');
+            canvas.width = videoImg.width;
+            canvas.height = videoImg.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(videoImg, 0, 0, canvas.width, canvas.height);
+            
+            // Konversi ke base64
+            const imageData = canvas.toDataURL('image/png');
+            
+            // Kirim ke server
+            fetch('/capture_photo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ image: imageData }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Hapus semua foto sebelumnya
+                    const oldImgs = document.querySelectorAll('.photo-gallery .photo-item');
+                    oldImgs.forEach(item => item.remove());
+                                         // Tambahkan foto baru dengan tombol download saja
+                     const photoItem = document.createElement('div');
+                     photoItem.className = 'photo-item mb-3 p-3 border rounded';
+                     
+                     // Foto
+                     const img = document.createElement('img');
+                     img.src = imageData;
+                     img.className = 'mb-3 shadow-sm w-100';
+                     photoItem.appendChild(img);
+                     
+                     // Tombol download
+                     if (data.saved_filename) {
+                         const downloadBtn = document.createElement('a');
+                         downloadBtn.href = `/download_photo/${data.saved_filename}`;
+                         downloadBtn.className = 'btn btn-outline-primary btn-sm';
+                         downloadBtn.download = data.saved_filename;
+                         downloadBtn.innerHTML = '<i class="fas fa-download me-1"></i>Download';
+                         photoItem.appendChild(downloadBtn);
+                     }
+                                         photoGallery.appendChild(photoItem);
+                     
+                     // Tampilkan tombol deteksi ulang
+                     document.getElementById('retryBtn').style.display = 'inline-block';
+                     
+                     // Tampilkan notifikasi
+                     showNotification('Foto berhasil disimpan dan dianalisis!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Gagal menyimpan foto!', 'error');
+            })
+            .finally(() => {
+                isProcessing = false;
+                captureBtn.disabled = false;
+            });
+                 });
+         
+         // Event listener untuk tombol deteksi ulang
+         document.getElementById('retryBtn').addEventListener('click', function() {
+             // Sembunyikan tombol deteksi ulang
+             this.style.display = 'none';
+             
+             // Hapus semua foto dari gallery
+             const oldImgs = document.querySelectorAll('.photo-gallery .photo-item');
+             oldImgs.forEach(item => item.remove());
+             
+             // Tampilkan notifikasi
+             showNotification('Siap untuk deteksi ulang!');
+         });
+         
+         function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} position-fixed top-0 start-50 translate-middle-x mt-3`;
+            notification.style.zIndex = '1000';
+            notification.innerHTML = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Dropdown kamera
+        const cameraSelect = document.getElementById('cameraSelect');
+        const videoFeed = document.getElementById('videoFeed');
+        // Fetch daftar kamera
+        fetch('/list_cameras').then(r => r.json()).then(data => {
+            cameraSelect.innerHTML = '';
+            data.cameras.forEach(cam => {
+                const opt = document.createElement('option');
+                opt.value = cam.index;
+                opt.textContent = cam.label;
+                cameraSelect.appendChild(opt);
+            });
+        });
+        // Ganti kamera saat dipilih
+        cameraSelect.addEventListener('change', function() {
+            const camIdx = cameraSelect.value;
+            videoFeed.src = `/video_feed?camera=${camIdx}`;
+        });
+        // Set default kamera ke 0
+        cameraSelect.value = 0;
+    });
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}Prediksi{% endblock %}
+
+{% block content %}
+<!-- ===== KONTEN UTAMA ===== -->
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-lg">
+            <!-- ===== HEADER KARTU ===== -->
+            <div class="card-header bg-primary text-white py-3">
+                <h3 class="card-title mb-0 text-center">
+                    <i class="fas fa-tooth me-2"></i>Upload & Analisis Gigi
+                </h3>
+            </div>
+            <!-- ===== BODY KARTU ===== -->
+            <div class="card-body p-4">
+                {% if not prediction %}
+                <!-- ===== FORM UPLOAD ===== -->
+                <form action="{{ url_for('prediksi') }}" method="post" enctype="multipart/form-data" class="text-center">
+                    <div class="mb-4">
+                        <div class="upload-area p-5 border-2 border-dashed rounded-3 bg-light">
+                            <i class="fas fa-cloud-upload-alt display-4 text-primary mb-3"></i>
+                            <h4 class="mb-3">Unggah Foto Gigi untuk Analisis</h4>
+                            <p class="text-muted mb-3">Format yang didukung: JPG, PNG, JPEG (maksimal 5MB)</p>
+                            <input type="file" name="file" class="form-control" accept="image/*" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                        <i class="fas fa-search me-2"></i>Analisis
+                    </button>
+                </form>
+                {% else %}
+                <!-- ===== HASIL ANALISIS ===== -->
+                <div class="result-container">
+                    <div class="row">
+                        <!-- ===== GAMBAR UPLOAD ===== -->
+                        <div class="col-md-6">
+                            <img src="{{ image_url }}" alt="Uploaded Image" class="img-fluid rounded-3 shadow mb-3">
+                        </div>
+                        <!-- ===== INFORMASI HASIL ===== -->
+                        <div class="col-md-6">
+                            <div class="result-info">
+                                <h4 class="mb-3">Hasil Analisis:</h4>
+                                <div class="alert {% if prediction == 'no-caries' %}alert-success{% elif prediction == 'bukan-gigi' %}alert-info{% else %}alert-warning{% endif %} mb-3">
+                                    <h5 class="alert-heading">
+                                        <i class="fas {% if prediction == 'no-caries' %}fa-check-circle{% elif prediction == 'bukan-gigi' %}fa-info-circle{% else %}fa-exclamation-triangle{% endif %} me-2"></i>
+                                        {{ prediction_display }}
+                                    </h5>
+                                    {% if prediction != 'bukan-gigi' %}
+                                    <div class="mb-2" style="font-weight:bold; font-size:1.1em;">
+                                        {{ level_label }}
+                                    </div>
+                                    <div class="accuracy-info">
+                                        <p class="mb-2">Tingkat keyakinan: {{ "%.2f"|format(probability) }}%</p>
+                                        <div class="progress">
+                                            <div class="progress-bar {% if prediction == 'no-caries' %}bg-success{% elif prediction == 'bukan-gigi' %}bg-info{% else %}bg-warning{% endif %}" 
+                                                 role="progressbar" 
+                                                 style="width: {{ probability }}%"
+                                                 aria-valuenow="{{ probability }}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                        {% if accuracy_level %}
+                                        <p class="mt-2 mb-0 text-muted">
+                                            <small>
+                                                Level Akurasi: 
+                                                <span class="badge {% if accuracy_level == '100' %}bg-success
+                                                      {% elif accuracy_level == '90' %}bg-info
+                                                      {% elif accuracy_level == '80' %}bg-warning
+                                                      {% else %}bg-secondary{% endif %}">
+                                                    {{ accuracy_level }}%
+                                                </span>
+                                            </small>
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if prediction != 'bukan-gigi' %}
+                                <!-- ===== REKAM MEDIS ===== -->
+                                <div class="info-details mt-4">
+                                    <h5 class="mb-3">Rekam Medis:</h5>
+                                    <div class="accordion" id="infoAccordion">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#gejalaCollapse">
+                                                    Gejala
+                                                </button>
+                                            </h2>
+                                            <div id="gejalaCollapse" class="accordion-collapse collapse show" data-bs-parent="#infoAccordion">
+                                                <div class="accordion-body">
+                                                    {{ info.gejala }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#penyebabCollapse">
+                                                    Penyebab
+                                                </button>
+                                            </h2>
+                                            <div id="penyebabCollapse" class="accordion-collapse collapse" data-bs-parent="#infoAccordion">
+                                                <div class="accordion-body">
+                                                    {{ info.penyebab }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pengobatanCollapse">
+                                                    Pengobatan
+                                                </button>
+                                            </h2>
+                                            <div id="pengobatanCollapse" class="accordion-collapse collapse" data-bs-parent="#infoAccordion">
+                                                <div class="accordion-body">
+                                                    {{ info.pengobatan }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <!-- ===== INFORMASI BUKAN GIGI ===== -->
+                                <div class="info-details mt-4">
+                                    <div class="alert alert-info info-alert">
+                                        <h5 class="mb-3">
+                                            <i class="fas fa-info-circle me-2"></i>Informasi
+                                        </h5>
+                                        <p class="mb-0">
+                                            {{ info.pesan }}
+                                        </p>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ===== TOMBOL DETEKSI ULANG ===== -->
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('prediksi') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-redo me-2"></i>Deteksi Ulang
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== CSS KUSTOM ===== -->
+{% block extra_css %}
+<style>
+    .upload-area {
+        border: 2px dashed #3498db;
+        transition: all 0.3s ease;
+    }
+    
+    .upload-area:hover {
+        border-color: var(--primary-color);
+        background-color: #f8f9fa;
+    }
+    
+    .result-info {
+        height: 100%;
+    }
+    
+    .accordion-button:not(.collapsed) {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--primary-color);
+    }
+    
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: rgba(52, 152, 219, 0.5);
+    }
+    
+    .accuracy-info {
+        padding: 10px 0;
+    }
+    
+    .progress {
+        height: 10px;
+        border-radius: 5px;
+        background-color: #e9ecef;
+    }
+    
+    .progress-bar {
+        transition: width 0.6s ease;
+    }
+    
+    .badge {
+        font-size: 0.9em;
+        padding: 5px 10px;
+    }
+    
+    .info-alert {
+        border-left: 4px solid #17a2b8;
+        background-color: #f8f9fa;
+    }
+    
+    .info-alert ul {
+        margin-bottom: 0;
+        padding-left: 20px;
+    }
+    
+    .info-alert li {
+        margin-bottom: 5px;
+    }
+</style>
+{% endblock %}
+{% endblock %}

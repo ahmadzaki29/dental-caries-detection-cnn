@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}Tentang{% endblock %}
+
+{% block content %}
+<!-- ===== KONTEN UTAMA ===== -->
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow-lg">
+            <!-- ===== HEADER KARTU ===== -->
+            <div class="card-header bg-primary text-white py-3">
+                <h3 class="card-title mb-0 text-center">
+                    <i class="fas fa-info-circle me-2"></i>Tentang Sistem Deteksi Gigi
+                </h3>
+            </div>
+            <!-- ===== BODY KARTU ===== -->
+            <div class="card-body p-4">
+                <div class="row g-4">
+                    <!-- ===== INFORMASI SISTEM ===== -->
+                    <div class="col-md-6">
+                        <div class="about-section">
+                            <h4 class="mb-3">
+                                <i class="fas fa-brain text-primary me-2"></i>
+                                Tentang Sistem
+                            </h4>
+                            <p class="text-muted">
+                                Sistem deteksi gigi ini menggunakan <strong>kecerdasan buatan</strong> untuk menganalisis foto gigi dan mendeteksi 3 kondisi: gigi sehat, gigi terkena karies, dan gambar yang bukan gigi. Sistem telah dilatih dengan ribuan gambar gigi asli dan mencapai tingkat keakuratan yang tinggi.
+                            </p>
+                                                         <div class="features-highlight mt-3">
+                                 <div class="row g-2">
+                                     <div class="col-6">
+                                         <span class="badge bg-primary w-100">Kecerdasan Buatan</span>
+                                     </div>
+                                     <div class="col-6">
+                                         <span class="badge bg-info w-100">Deteksi Otomatis</span>
+                                     </div>
+                                     <div class="col-6">
+                                         <span class="badge bg-success w-100">Real-time</span>
+                                     </div>
+                                     <div class="col-6">
+                                         <span class="badge bg-warning w-100">Mudah Digunakan</span>
+                                     </div>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                    <!-- ===== STATISTIK PERFORMA ===== -->
+                    <div class="col-md-6">
+                        <div class="about-section">
+                            <h4 class="mb-3">
+                                <i class="fas fa-chart-line text-primary me-2"></i>
+                                Tingkat Keakuratan
+                            </h4>
+                            <div class="performance-stats">
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="stat-item">
+                                            <h3 class="text-primary mb-1">Tinggi</h3>
+                                            <p class="text-muted small">Tingkat Keakuratan</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stat-item">
+                                            <h3 class="text-success mb-1">3</h3>
+                                            <p class="text-muted small">Jenis Deteksi</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-muted mt-3">
+                                Sistem dapat menganalisis gambar dalam hitungan detik dan memberikan hasil yang akurat untuk membantu deteksi dini masalah gigi.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- ===== FITUR UTAMA ===== -->
+                    <div class="col-md-6">
+                        <div class="about-section">
+                            <h4 class="mb-3">
+                                <i class="fas fa-user-md text-primary me-2"></i>
+                                Fitur Utama
+                            </h4>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <strong>Deteksi Otomatis:</strong> Mengenali gigi sehat, gigi karies, dan gambar bukan gigi
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <strong>Upload Foto:</strong> Unggah foto gigi untuk analisis lengkap dengan informasi medis
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <strong>Kamera Langsung:</strong> Deteksi menggunakan kamera secara real-time
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <strong>Informasi Medis:</strong> Gejala, penyebab, dan saran pengobatan
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <strong>Tingkat Kepercayaan:</strong> Menampilkan seberapa akurat hasil deteksi
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- ===== CARA PENGGUNAAN ===== -->
+                    <div class="col-md-6">
+                        <div class="about-section">
+                            <h4 class="mb-3">
+                                <i class="fas fa-question-circle text-primary me-2"></i>
+                                Cara Penggunaan
+                            </h4>
+                            <div class="accordion" id="howToUseAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#uploadStep">
+                                            <i class="fas fa-upload me-2"></i>1. Upload Foto
+                                        </button>
+                                    </h2>
+                                    <div id="uploadStep" class="accordion-collapse collapse show" data-bs-parent="#howToUseAccordion">
+                                        <div class="accordion-body">
+                                            Unggah foto gigi dengan format JPG, PNG, atau JPEG (maksimal 5MB). Pastikan gambar menampilkan gigi dengan jelas dan pencahayaan yang baik.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cameraStep">
+                                            <i class="fas fa-camera me-2"></i>2. Kamera Langsung
+                                        </button>
+                                    </h2>
+                                    <div id="cameraStep" class="accordion-collapse collapse" data-bs-parent="#howToUseAccordion">
+                                        <div class="accordion-body">
+                                            Gunakan fitur kamera untuk deteksi langsung. Sistem akan menampilkan hasil secara real-time dengan kotak deteksi dan label hasil.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#analysisStep">
+                                            <i class="fas fa-cogs me-2"></i>3. Proses Analisis
+                                        </button>
+                                    </h2>
+                                    <div id="analysisStep" class="accordion-collapse collapse" data-bs-parent="#howToUseAccordion">
+                                        <div class="accordion-body">
+                                            Sistem akan menganalisis foto menggunakan kecerdasan buatan dan memberikan hasil yang akurat dalam hitungan detik.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#resultStep">
+                                            <i class="fas fa-clipboard-list me-2"></i>4. Hasil & Informasi
+                                        </button>
+                                    </h2>
+                                    <div id="resultStep" class="accordion-collapse collapse" data-bs-parent="#howToUseAccordion">
+                                        <div class="accordion-body">
+                                            Hasil ditampilkan dengan tingkat kepercayaan, persentase akurasi, dan informasi medis lengkap (gejala, penyebab, pengobatan) untuk gigi sehat dan gigi karies.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ===== PERINGATAN PENTING ===== -->
+                    <div class="col-12">
+                        <div class="about-section">
+                            <h4 class="mb-3">
+                                <i class="fas fa-shield-alt text-primary me-2"></i>
+                                Informasi Penting
+                            </h4>
+                            <div class="alert alert-info">
+                                <h6 class="alert-heading">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Peringatan Penting
+                                </h6>
+                                <p class="mb-0">
+                                    Sistem ini dirancang sebagai <strong>alat bantu deteksi awal</strong> dan tidak menggantikan pemeriksaan profesional oleh dokter gigi. 
+                                    Hasil deteksi harus dikonsultasikan dengan tenaga medis untuk diagnosis dan pengobatan yang tepat.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== CSS KUSTOM ===== -->
+{% block extra_css %}
+<style>
+    .about-section {
+        height: 100%;
+        padding: 1.5rem;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .about-section:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .features-highlight .badge {
+        font-size: 0.85rem;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .features-highlight .badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .performance-stats .stat-item {
+        transition: transform 0.3s ease;
+        padding: 1rem;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    
+    .performance-stats .stat-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .performance-stats h3 {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    
+    .list-unstyled li {
+        padding: 0.5rem 0;
+        transition: transform 0.2s ease;
+    }
+    
+    .list-unstyled li:hover {
+        transform: translateX(5px);
+    }
+    
+    .accordion-button:not(.collapsed) {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--primary-color);
+    }
+    
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: rgba(52, 152, 219, 0.5);
+    }
+    
+    .alert-info {
+        border-left: 4px solid #17a2b8;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
+    }
+    
+    .alert-heading {
+        color: #0c5460;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+{% endblock %}
